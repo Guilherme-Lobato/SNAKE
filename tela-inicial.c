@@ -201,6 +201,7 @@ void openGame() {
     CloseWindow();
 }
 
+//MAPAS PARA JOGAR
 
 int main(void) {
     typedef enum { MENU_PLAY, MENU_MAPS, MENU_STYLE_SNAKE, MENU_INFO, MENU_EXIT } MenuOption;
