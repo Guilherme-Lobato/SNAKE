@@ -1,69 +1,6 @@
 #include <raylib.h>
 #include <stdlib.h>
 #include <stdio.h> 
-#include "snake.h"
-
-// TELA SELEÇÃO DE ESTILO COBRA
-void openStyleSnake() {
-    typedef enum { SNAKE_1, SNAKE_2, SNAKE_3, VOLTAR_MENU } SnakeOption;
-    const int largura = 800;
-    const int altura = 800;
-    InitWindow(largura, altura, "Estilo Snake");
-    SetTargetFPS(60);
-
-    SnakeOption optionSelect = SNAKE_1; 
-    int totalOptionsSnakes = 4; 
-
-    Vector2 snakePositions[3] = {
-        {(largura - 80) / 2 - 100, 250},  
-        {(largura - 80) / 2, 250},        
-        {(largura - 80) / 2 + 100, 250} 
-    };
-
-    bool selectingSnake = true;
-
-    while (!WindowShouldClose()) {
-        if (IsKeyPressed(KEY_ENTER)) {
-            if (selectingSnake) {
-            } else {
-                CloseWindow();
-                return;
-            }
-        }
-
-        if (selectingSnake) {
-            if (IsKeyPressed(KEY_RIGHT)) {
-                optionSelect = (optionSelect + 1) % totalOptionsSnakes; 
-            }
-            if (IsKeyPressed(KEY_LEFT)) {
-                optionSelect = (optionSelect - 1 + totalOptionsSnakes) % totalOptionsSnakes; 
-            }
-            if (IsKeyPressed(KEY_DOWN)) {
-                selectingSnake = false; 
-            }
-        } else {
-            if (IsKeyPressed(KEY_UP)) {
-                selectingSnake = true; 
-            }
-        }
-
-        BeginDrawing();
-        ClearBackground(BLUE); 
-
-        DrawText("Escolha o Estilo da Snake", (largura - MeasureText("Escolha o Estilo da Snake", 40)) / 2, 100, 40, BLACK);
-        
-        for (int i = 0; i < totalOptionsSnakes - 1; i++) { 
-            Color color = (optionSelect == i) ? BLACK : WHITE; 
-            DrawRectangleV(snakePositions[i], (Vector2){80, 40}, color); 
-        }
-
-        Color backColor = selectingSnake ? DARKGRAY : RED;
-        DrawText("VOLTAR", (largura - MeasureText("VOLTAR", 30)) / 2, 350, 30, backColor);
-
-        EndDrawing();
-    }
-}
-
 
 //TELA SELEÇÃO DE MAPAS
 void openMapSelect() {
@@ -115,93 +52,6 @@ void openMapSelect() {
     }
 }
 
-// TELA DO JOGO
-void openGame() {
-    typedef struct {
-        float velocidade;
-        float posicaoX;
-        float posicaoY;
-
-        bool vertical;
-        
-        Vector2 direcao;
-    } Jogador;
-
-    const int largura = 800;
-    const int altura = 800;
-    InitWindow(largura, altura, "GAME");
-    SetTargetFPS(60);
-
-    Jogador jogador;
-
-    jogador.velocidade = largura / 300.0f;
-    jogador.posicaoX = largura / 2.0f;
-    jogador.posicaoY = (9.0f * altura) / 10.0f;
-    jogador.vertical = false;
-    jogador.direcao = (Vector2){1.0f, 0.0f};
-
-    int largura_retangulo = 20;
-    int altura_retangulo = 15;
-
-    while (!WindowShouldClose())
-    {
-        if (IsKeyPressed(KEY_LEFT)) {
-            jogador.direcao = (Vector2){-1.0f, 0.0f};
-            jogador.vertical = false;  
-        } 
-        if (IsKeyPressed(KEY_RIGHT)) {
-            jogador.direcao = (Vector2){1.0f, 0.0f};
-            jogador.vertical = false;  
-        }
-        if (IsKeyPressed(KEY_UP)) {
-            jogador.direcao = (Vector2){0.0f, -1.0f};
-            jogador.vertical = true; 
-        }
-        if (IsKeyPressed(KEY_DOWN)) {
-            jogador.direcao = (Vector2){0.0f, 1.0f};
-            jogador.vertical = true; 
-        }
-
-        jogador.posicaoX += jogador.direcao.x * jogador.velocidade;
-        jogador.posicaoY += jogador.direcao.y * jogador.velocidade;
-
-        if (jogador.posicaoX < 0 || jogador.posicaoX + largura_retangulo > largura || jogador.posicaoY < 0 || jogador.posicaoY + altura_retangulo > altura) {
-            CloseWindow(); 
-        }
-
-
-        BeginDrawing();
-        ClearBackground(RAYWHITE); 
-
-        Color verde = (Color){0, 255, 0, 255};
-        Color vermelho = (Color){255, 0, 0, 255};
-
-        if (jogador.vertical) {
-            if (jogador.direcao.y < 0) {
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY, altura_retangulo, largura_retangulo, vermelho); 
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY + largura_retangulo, altura_retangulo, largura_retangulo, verde);
-            }
-            else {
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY + largura_retangulo, altura_retangulo, largura_retangulo, verde); 
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY, altura_retangulo, largura_retangulo, vermelho);  
-            }
-        } else {
-            if (jogador.direcao.x < 0) {
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY, largura_retangulo, altura_retangulo, vermelho); 
-                DrawRectangle(jogador.posicaoX + largura_retangulo, jogador.posicaoY, largura_retangulo, altura_retangulo, verde); 
-            } else {
-                DrawRectangle(jogador.posicaoX + largura_retangulo, jogador.posicaoY, largura_retangulo, altura_retangulo, vermelho); 
-                DrawRectangle(jogador.posicaoX, jogador.posicaoY, largura_retangulo, altura_retangulo, verde); 
-            }
-        }
-
-        EndDrawing();
-    }
-
-    CloseWindow();
-}
-
-//MAPAS PARA JOGAR
 
 int main(void) {
     typedef enum { MENU_PLAY, MENU_MAPS, MENU_STYLE_SNAKE, MENU_INFO, MENU_EXIT } MenuOption;
@@ -228,9 +78,6 @@ int main(void) {
         if (IsKeyPressed(KEY_ENTER)) {
             switch (optionSelect) {
                 case MENU_PLAY:
-                    CloseWindow();
-                    openGame();
-                    main();
                     break;
                 case MENU_MAPS:
                     CloseWindow();
@@ -238,9 +85,6 @@ int main(void) {
                     main();
                     break;
                 case MENU_STYLE_SNAKE:
-                    CloseWindow();
-                    openStyleSnake();
-                    main();
                     break;
                 case MENU_INFO:
                     break;
